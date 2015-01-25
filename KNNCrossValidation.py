@@ -25,6 +25,7 @@ import random
 import operator
 import numpy as np
 import scipy.spatial.distance as ssd
+import matplotlib.pyplot as pp
 
 if __name__ == '__main__':
     pass
@@ -136,6 +137,7 @@ def mainMethod():
         errorPercentage = calculateErrorPercentage(predictedLabels, yTest)
         
         printOutcome(errorPercentage, i)
+        
     
       
 mainMethod()   
