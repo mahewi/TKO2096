@@ -57,7 +57,7 @@ testX = np.genfromtxt(testpath, delimiter=',', usecols=range(0, 41))
 testY = np.genfromtxt(testpath, dtype=None, delimiter=',', usecols=(41))
 
 # Limit how many rows are handled
-dataLimit = 2000
+dataLimit = 3000
 
 
 # Main method used as a running class. Preprocess and normalize the data
@@ -70,24 +70,30 @@ def main():
     xTrain, xTest, yTrain, yTest = crossValidate(normalizedTrainX)
     
     K = selectBestK(xTrain,xTest,yTrain,yTest)   
-    calculateAccuracyAndScore(K,normalizedTrainX,normalizedTestX)
+    predictedLabels = predictLabelsBasedOnKNeighbours(K,normalizedTrainX,normalizedTestX)
+    calculateAccuracyAndScore(predictedLabels)
+    plotConfusionMatrix(predictedLabels)
     
-
-# Create KNN classifier with chosen / best K-value and plot the confusion matrix
-def calculateAccuracyAndScore(K,normTrainX,normTestX):
-    knc = KNeighborsClassifier(n_neighbors=K)
-    knc.fit(normTrainX, trainY[:dataLimit])
-    predictedLabels = knc.predict(normTestX)
-    
-    print 'Accuracy: ' + str(calculateErrorPercentage(predictedLabels, testY[:dataLimit]))
-    print 'F-score: ' + str(fscore(testY[:dataLimit],predictedLabels))
-    
-    cm = confusion_matrix(testY[:dataLimit], predictedLabels)
+# Plots confusion matrix
+def plotConfusionMatrix(predLabels):
+    cm = confusion_matrix(testY[:dataLimit], predLabels)
     pp.matshow(cm)
     pp.show()
 
+# Calculates and prints out accuracy of predicted labels and F-score
+def calculateAccuracyAndScore(predLabels):
+    print 'Accuracy: ' + str(100 - calculateErrorPercentage(predLabels, testY[:dataLimit]))
+    print 'F-score: ' + str(fscore(testY[:dataLimit],predLabels))
+    
+# Predicts labels based on K neighbors. Uses sklear.neigbours.KNeighborsClassifier to predict the labels
+# Return labels
+def predictLabelsBasedOnKNeighbours(K,normTrainX,normTestX):
+    knc = KNeighborsClassifier(n_neighbors=K)
+    knc.fit(normTrainX, trainY[:dataLimit])
+    predictedLabels = knc.predict(normTestX)
+    return predictedLabels
 
-# Calculate the error percentage of the predicted labels.
+# Predicts labels based on k nearest neighbour (K=3..10) and calculates the percentage of errors.
 # Return the best value of K (smallest error percentage)
 def selectBestK(xTrain,xTest,yTrain,yTest):
     K = 3
@@ -109,6 +115,7 @@ def selectBestK(xTrain,xTest,yTrain,yTest):
     
 
 # Use stratified ten fold to create train and test sets
+# Return train and test sets
 def crossValidate(normX):
     skf = StratifiedKFold(trainY[:dataLimit], n_folds=10, shuffle=True)
     for train_index, test_index in skf:
