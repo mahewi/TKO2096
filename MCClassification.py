@@ -56,8 +56,11 @@ trainY = np.genfromtxt(trainpath, dtype=None, delimiter=',', usecols=(41))
 testX = np.genfromtxt(testpath, delimiter=',', usecols=range(0, 41))
 testY = np.genfromtxt(testpath, dtype=None, delimiter=',', usecols=(41))
 
-dataLimit = 1000
+# Limit how many rows are handled
+dataLimit = 2000
 
+
+# Main method used as a running class. Preprocess and normalize the data
 def main():
     preProcessedTrainX = preProcessData(trainX[:dataLimit],trainpath)
     preProcessedTestX = preProcessData(testX[:dataLimit],testpath)
@@ -66,21 +69,26 @@ def main():
     
     xTrain, xTest, yTrain, yTest = crossValidate(normalizedTrainX)
     
-    K = selectBestK(xTrain,xTest,yTrain,yTest)
-    
+    K = selectBestK(xTrain,xTest,yTrain,yTest)   
     calculateAccuracyAndScore(K,normalizedTrainX,normalizedTestX)
     
+
+# Create KNN classifier with chosen / best K-value and plot the confusion matrix
 def calculateAccuracyAndScore(K,normTrainX,normTestX):
     knc = KNeighborsClassifier(n_neighbors=K)
     knc.fit(normTrainX, trainY[:dataLimit])
     predictedLabels = knc.predict(normTestX)
-    print calculateErrorPercentage(predictedLabels, testY[:dataLimit])
-    print fscore(testY[:dataLimit],predictedLabels)
-    cm = confusion_matrix(testY[:dataLimit], predictedLabels)
     
+    print 'Accuracy: ' + str(calculateErrorPercentage(predictedLabels, testY[:dataLimit]))
+    print 'F-score: ' + str(fscore(testY[:dataLimit],predictedLabels))
+    
+    cm = confusion_matrix(testY[:dataLimit], predictedLabels)
     pp.matshow(cm)
     pp.show()
 
+
+# Calculate the error percentage of the predicted labels.
+# Return the best value of K (smallest error percentage)
 def selectBestK(xTrain,xTest,yTrain,yTest):
     K = 3
     errorOfBestK = 1.0
@@ -95,10 +103,12 @@ def selectBestK(xTrain,xTest,yTrain,yTest):
             predictedLabels.append(chooseMajorityLabel(neighbors))
         
         errorPercentage = calculateErrorPercentage(predictedLabels, yTest)
-        if(errorPercentage < errorOfBestK):
+        if errorPercentage < errorOfBestK:
             K = i
     return K
     
+
+# Use stratified ten fold to create train and test sets
 def crossValidate(normX):
     skf = StratifiedKFold(trainY[:dataLimit], n_folds=10, shuffle=True)
     for train_index, test_index in skf:
@@ -107,6 +117,10 @@ def crossValidate(normX):
     
     return X_train, X_test, y_train, y_test
 
+
+# Map the string type features as float values so the data can be normalized later on.
+# Used LabelEncoder to convert Strings to Integers and OneHotEncoder to convert these Integers to float sequences.
+# Then add these values to the original parsed matrix of feature data.
 def preProcessData(x,path):
     stringColumns = np.genfromtxt(path, delimiter=',',dtype=None, usecols=range(1,4))
     transportProtocols = []
@@ -144,11 +158,6 @@ def preProcessData(x,path):
         x[i][3] = np.where(encodedStrings[i][enc.n_values_[1]+enc.n_values_[0]:enc.n_values_[2]+enc.n_values_[1]+enc.n_values_[0]]==1)[0]
         
     return x
-
-
-
-
-
 
 
 # Calculate eucledian distances for a single test instance against each train instance.
@@ -202,5 +211,4 @@ def printOutcome(errorPercentage, k):
     print 'The accuracy of the predition with value k={k}: {errorPercentage} %'.format(k=k, errorPercentage=errorPercentage)
 
     
-
 main()
