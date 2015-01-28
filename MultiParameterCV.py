@@ -40,7 +40,7 @@ def LfoCV(k):
     kf = KFold(len(stdX),67)
     for train_index, test_index in kf:
         xTrain, xTest = stdX[train_index], stdX[test_index]
-        yTrain, yTest = y[train_index], y[test_index]
+        yTrain, _ = y[train_index], y[test_index]
         for i in range(len(xTest)):
             neighbors = inferNeighbors(xTrain, xTest[i],yTrain, k)
             yPredictions.append(chooseMajorityLabel(neighbors, k))
@@ -48,6 +48,7 @@ def LfoCV(k):
     cIndexCTotal = calculateCIndex(yPredictions,0,yTrain)
     cIndexCd = calculateCIndex(yPredictions,1,yTrain)
     cIndexPb = calculateCIndex(yPredictions,2,yTrain)
+    print "Leave-four-out cross-validation"
     printCIndexes(cIndexCTotal,cIndexCd,cIndexPb)
     
 def LooCV(k):
@@ -60,6 +61,7 @@ def LooCV(k):
     cIndexCTotal = calculateCIndex(yPredictions,0,y)
     cIndexCd = calculateCIndex(yPredictions,1,y)
     cIndexPb = calculateCIndex(yPredictions,2,y)
+    print "Leave-one-out cross-validation"
     printCIndexes(cIndexCTotal,cIndexCd,cIndexPb)
     
 def printCIndexes(cTotal,cd,pb):
@@ -67,6 +69,7 @@ def printCIndexes(cTotal,cd,pb):
     print 'c-total: {a}'.format(a=cTotal)
     print 'cd: {b}'.format(b=cd)
     print 'pb: {c}'.format(c=pb)
+    print
     
 def calculateCIndex(predictions,index,labels):
     n = 0
