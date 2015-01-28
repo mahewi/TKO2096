@@ -19,8 +19,6 @@ Use K-Nearest Neighbor Regression to predict total metal concentration (c_total)
 
 import os
 import numpy as np
-from scipy.stats import zscore
-from sklearn import preprocessing
 
 if __name__ == '__main__':
     pass
@@ -28,16 +26,18 @@ if __name__ == '__main__':
 basepath = os.path.dirname(__file__)
 filepath = os.path.abspath(os.path.join(basepath, "Water_data.csv"))
 
-X = np.genfromtxt(filepath, delimiter=',', names=True, dtype='float', usecols=range(3, 6))
-y = np.genfromtxt(filepath, delimiter=',', names=True, usecols=range(0,3))
+y = np.genfromtxt(filepath, delimiter=',', skiprows=1, usecols=range(3, 6))
+x = np.genfromtxt(filepath, delimiter=',', skiprows=1, usecols=range(0,3))
 
 
 def main():
     calculateZScore()
 
+
 def calculateZScore():
-    print X
-    std_X = (X - np.mean(X))/np.std(X)
-    print std_X
+    xArr = np.asarray(x)
+    zScores = (xArr - xArr.mean()) / xArr.std()
+    
+    return zScores
 
 main()
