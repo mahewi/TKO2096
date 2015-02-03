@@ -38,11 +38,11 @@ def LfoCV(k):
     stdX = calculateZScore()
     i = 0
     kf = KFold(len(stdX),67)
-    for train_index, test_index in kf:
+    for train_index, test_index in kf:  
         xTrain, xTest = stdX[train_index], stdX[test_index]
         yTrain, _ = y[train_index], y[test_index]
         for i in range(len(xTest)):
-            neighbors = inferNeighbors(xTrain, xTest[i],yTrain, k)
+            neighbors = inferNeighbors(xTrain, xTest[i],yTrain, k,0)
             yPredictions.append(chooseMajorityLabel(neighbors, k))
             
     cIndexCTotal = calculateCIndex(yPredictions,0,yTrain)
@@ -55,7 +55,7 @@ def LooCV(k):
     yPredictions = []
     stdX = calculateZScore()
     for i in range(len(stdX)):
-        neighbors = inferNeighbors(stdX,stdX[i],y,k)
+        neighbors = inferNeighbors(stdX,stdX[i],y,k,1)
         yPredictions.append(chooseMajorityLabel(neighbors,k))
         
     cIndexCTotal = calculateCIndex(yPredictions,0,y)
@@ -106,13 +106,13 @@ def chooseMajorityLabel(neighbors,k):
     return predictedOutcome
 
 
-def inferNeighbors(trainSet,testInstance,labels,k):   
+def inferNeighbors(trainSet,testInstance,labels,k,leaveOut):   
     distances = []
     for x in range(len(trainSet)):
         distances.append((ssd.euclidean(trainSet[x], testInstance), labels[x]))
         
     distances.sort(key=operator.itemgetter(0))    
-    return distances[1:k+1]
+    return distances[leaveOut:k+leaveOut]
 
      
 def calculateZScore():
