@@ -22,6 +22,7 @@ import os
 import operator
 import scipy.spatial.distance as ssd
 import numpy as np
+import matplotlib.pyplot as pp
 
 
 if __name__ == '__main__':
@@ -50,7 +51,7 @@ def calculateDistanceMatrix():
             else:
                 xAxis.append(ssd.euclidean(z[i], z[j]))
         distanceMatrix.append(xAxis)
-        
+   
     return distanceMatrix
 
 def calculateCIndex(predictions, labels):
@@ -79,12 +80,13 @@ def calculateCIndex(predictions, labels):
 def LooCV(k, distanceMatrix):
     yPredictions = []
     for i in range(len(stdX)):
-        neighbors = inferNeighbors(stdX, stdX[i], y, k, distanceMatrix)
+        neighbors = inferNeighbors(stdX, stdX[i], y, k, distanceMatrix[i])
         yPredictions.append(chooseMajorityLabel(neighbors,k))
         
     cIndex = calculateCIndex(yPredictions, y)
-    print "Leave-one-out cross-validation"
     printCIndexes(cIndex)
+    
+    return cIndex
 
 def chooseMajorityLabel(neighbors, k):
     predictedOutcome = []
@@ -96,17 +98,17 @@ def chooseMajorityLabel(neighbors, k):
     return predictedOutcome
 
 
-def inferNeighbors(trainSet, testInstance, labels, k, distMatrix):   
+def inferNeighbors(trainSet, testInstance, labels, k, distRow):   
     distances = []
     for x in range(len(trainSet)):
-        if distMatrix[x] >= 0.0:
+        if distRow[x] >= 0.0:
             distances.append((ssd.euclidean(trainSet[x], testInstance), labels[x]))
         
     distances.sort(key=operator.itemgetter(0))  
     return distances[0:k]
 
 def printCIndexes(cIndex):
-    print 'C Index: {a}'.format(a=cIndex)
+    print 'C-Index: {a}'.format(a=cIndex)
     print
 
 def calculateDeadZone(matrix):
@@ -117,11 +119,23 @@ def calculateDeadZone(matrix):
             xAxis[minIndex] = -1.0
     
     return matrix
-            
+
+def plotCIndexVsDeadZone(cIndexes, deadZoneValues):
+    pp.ylabel('C-index')
+    pp.xlabel('Deadzone radius')
+    pp.plot(deadZoneValues, cIndexes)
+    pp.show()     
+     
 def main():
     distanceMatrix = calculateDistanceMatrix()
-    for _ in range(21):
-        LooCV(5, distanceMatrix)
+    cIndexes = []
+    deadZoneValues = []
+    for i in range(5):
+        print 'Leave-one-out CV with deadzone radius ' + str(i * 10) + ':'
+        cIndexes.append(LooCV(5, distanceMatrix))
+        deadZoneValues.append(i * 10)
         distanceMatrix = calculateDeadZone(distanceMatrix)
+    
+    plotCIndexVsDeadZone(cIndexes, deadZoneValues)
 
 main()
