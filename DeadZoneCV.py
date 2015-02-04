@@ -23,7 +23,7 @@ import operator
 import scipy.spatial.distance as ssd
 import numpy as np
 import matplotlib.pyplot as pp
-
+import time
 
 if __name__ == '__main__':
     pass
@@ -127,14 +127,18 @@ def plotCIndexVsDeadZone(cIndexes, deadZoneValues):
     pp.show()     
      
 def main():
+    startTime = int(round(time.time() * 1000))
     distanceMatrix = calculateDistanceMatrix()
     cIndexes = []
     deadZoneValues = []
-    for i in range(5):
+    for i in range(21):
         print 'Leave-one-out CV with deadzone radius ' + str(i * 10) + ':'
         cIndexes.append(LooCV(5, distanceMatrix))
         deadZoneValues.append(i * 10)
         distanceMatrix = calculateDeadZone(distanceMatrix)
+    
+    endTime = int(round(time.time() * 1000))
+    print 'Running time: ' + str(endTime - startTime) + 'ms' 
     
     plotCIndexVsDeadZone(cIndexes, deadZoneValues)
 
