@@ -27,7 +27,7 @@ if __name__ == '__main__':
     pass
 
 basepath = os.path.dirname(__file__)
-filepath = os.path.abspath(os.path.join(basepath, "Water_data.csv"))
+filepath = os.path.abspath(os.path.join(basepath, "Data3/Water_data.csv"))
 
 y = np.genfromtxt(filepath, delimiter=',', skiprows=1, usecols=range(3, 6))
 x = np.genfromtxt(filepath, delimiter=',', skiprows=1, usecols=range(0,3))
