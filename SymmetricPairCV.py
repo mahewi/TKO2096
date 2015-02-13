@@ -24,24 +24,37 @@ def filterTrainSet(testInstance,index):
     trainIndexes = []
     lowerIndex = index - 20
     upperIndex = index + 20
-    while lowerIndex > 0:
+    trainIndexes.append(index)
+    
+    while lowerIndex > -1:
         trainIndexes.append(lowerIndex)
         lowerIndex = lowerIndex - 20
         
     while upperIndex < 400:
         trainIndexes.append(upperIndex)
         upperIndex = upperIndex + 20
-    
-    if ((index/10)*10 )% 20 == 0:
-        lowerBound = (index/10)*10
-    else:
-        lowerBound = ((index/10)*10) - 10
         
+    lowerBound = (index/10)*10
+    
+    if not lowerBound % 20 == 0:
+        lowerBound = lowerBound - 10
+       
     upperBound = lowerBound + 20
     
     for i in range(lowerBound,upperBound):
         trainIndexes.append(i)
         
+    for i in range((index%10)*20,(index%10)*20+20):
+        trainIndexes.append(i)
+        
+    a = lowerBound / 20
+    
+    while a < 400:
+        trainIndexes.append(a)
+        a = a + 20
+    
+
+    
     trainSet = []
     trainLabels = []
     for i in range(len(x)):
