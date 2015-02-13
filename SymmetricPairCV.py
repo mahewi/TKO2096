@@ -37,7 +37,7 @@ def generateIndexDep():
 dependencies = generateIndexDep()
 
 
-def filterTrainSet(testInstance,index):
+def filterTrainSet(index):
     lowerBound = (index/10)*10
     
     if lowerBound % 20 != 0:
@@ -63,7 +63,7 @@ def LooCV(modified):
     yPredictions = []
     for i in range(len(x)):
         if modified:
-            trainSet,trainLabels = filterTrainSet(x[i],i)
+            trainSet,trainLabels = filterTrainSet(i)
             trainSet.append(x[i])
             trainLabels.append(y[i])
         else:
