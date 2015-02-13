@@ -20,49 +20,39 @@ labelpath = os.path.abspath(os.path.join(basepath, "Data5/proteins.labels"))
 x = np.genfromtxt(featurepath, delimiter=',')
 y = np.genfromtxt(labelpath, delimiter=',')
 
+def generateIndexDep():
+    indexDeps = []
+    for i in range(20):
+        iDep = []
+        for j in range(i*20,i*20+20):
+            iDep.append(j)
+        k = i
+        while(k < 400):
+            iDep.append(k)
+            k = k + 20
+        indexDeps.append(iDep)
+
+    return indexDeps
+
+dependencies = generateIndexDep()
+
+
 def filterTrainSet(testInstance,index):
-    trainIndexes = []
-    lowerIndex = index - 20
-    upperIndex = index + 20
-    trainIndexes.append(index)
-    
-    #FILTER ITEM THAT HAS SAME SECOND PAIR AS TEST INSTANCE
-    while lowerIndex > -1:
-        trainIndexes.append(lowerIndex)
-        lowerIndex = lowerIndex - 20
-        
-    while upperIndex < 400:
-        trainIndexes.append(upperIndex)
-        upperIndex = upperIndex + 20
-        
-    #FILTER ITEMS THAT HAS SAME FIRST PAIR AS TEST INSTANCE
     lowerBound = (index/10)*10
     
-    if not lowerBound % 20 == 0:
+    if lowerBound % 20 != 0:
         lowerBound = lowerBound - 10
-       
-    upperBound = lowerBound + 20
-    
-    for i in range(lowerBound,upperBound):
-        trainIndexes.append(i)
-    
-    #FILTER ITEMS WHERE FIRST PAIR IS SAME AS TEST INSTANCE'S SECOND PAIR
-    for i in range((index%10)*20,(index%10)*20+20):
-        trainIndexes.append(i)
         
-    #FILTER ITEMS WHERE SECOND PAIR IS SAME AS TEST INSTANCE'S FIRST PAIR
-    a = lowerBound / 20
-    
-    while a < 400:
-        trainIndexes.append(a)
-        a = a + 20
+    indexOfSecondPair = lowerBound / 20
+    indexOfFirstPair = index - lowerBound
     
 
+    testIndexes = dependencies[indexOfFirstPair] + dependencies[indexOfSecondPair]
     #CREATE TRAINING SET AND LABELS
     trainSet = []
     trainLabels = []
     for i in range(len(x)):
-        if not i in trainIndexes:
+        if not i in testIndexes:
             trainSet.append(x[i])
             trainLabels.append(y[i])
             
