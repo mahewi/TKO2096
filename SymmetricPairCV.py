@@ -26,6 +26,7 @@ def filterTrainSet(testInstance,index):
     upperIndex = index + 20
     trainIndexes.append(index)
     
+    #FILTER ITEM THAT HAS SAME SECOND PAIR AS TEST INSTANCE
     while lowerIndex > -1:
         trainIndexes.append(lowerIndex)
         lowerIndex = lowerIndex - 20
@@ -34,6 +35,7 @@ def filterTrainSet(testInstance,index):
         trainIndexes.append(upperIndex)
         upperIndex = upperIndex + 20
         
+    #FILTER ITEMS THAT HAS SAME FIRST PAIR AS TEST INSTANCE
     lowerBound = (index/10)*10
     
     if not lowerBound % 20 == 0:
@@ -43,10 +45,12 @@ def filterTrainSet(testInstance,index):
     
     for i in range(lowerBound,upperBound):
         trainIndexes.append(i)
-        
+    
+    #FILTER ITEMS WHERE FIRST PAIR IS SAME AS TEST INSTANCE'S SECOND PAIR
     for i in range((index%10)*20,(index%10)*20+20):
         trainIndexes.append(i)
         
+    #FILTER ITEMS WHERE SECOND PAIR IS SAME AS TEST INSTANCE'S FIRST PAIR
     a = lowerBound / 20
     
     while a < 400:
@@ -54,7 +58,7 @@ def filterTrainSet(testInstance,index):
         a = a + 20
     
 
-    
+    #CREATE TRAINING SET AND LABELS
     trainSet = []
     trainLabels = []
     for i in range(len(x)):
