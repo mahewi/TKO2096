@@ -20,19 +20,35 @@ labelpath = os.path.abspath(os.path.join(basepath, "Data5/proteins.labels"))
 x = np.genfromtxt(featurepath, delimiter=',')
 y = np.genfromtxt(labelpath, delimiter=',')
 
-def filterTrainSet(testInstance):
-    freqX = sum(testInstance[0:25])
-    freqY = sum(testInstance[25:41])
+def filterTrainSet(testInstance,index):
+    trainIndexes = []
+    lowerIndex = index - 20
+    upperIndex = index + 20
+    while lowerIndex > 0:
+        trainIndexes.append(lowerIndex)
+        lowerIndex = lowerIndex - 20
+        
+    while upperIndex < 400:
+        trainIndexes.append(upperIndex)
+        upperIndex = upperIndex + 20
+    
+    if ((index/10)*10 )% 20 == 0:
+        lowerBound = (index/10)*10
+    else:
+        lowerBound = ((index/10)*10) - 10
+        
+    upperBound = lowerBound + 20
+    
+    for i in range(lowerBound,upperBound):
+        trainIndexes.append(i)
+        
     trainSet = []
     trainLabels = []
     for i in range(len(x)):
-        freqA = sum(x[i][0:25])
-        freqB = sum(x[i][25:41])
-        if freqX != freqA and freqX != freqB and freqY != freqA and freqY != freqB:
+        if not i in trainIndexes:
             trainSet.append(x[i])
             trainLabels.append(y[i])
             
-              
     return trainSet,trainLabels
     
 
@@ -40,7 +56,7 @@ def LooCV(modified):
     yPredictions = []
     for i in range(len(x)):
         if modified:
-            trainSet,trainLabels = filterTrainSet(x[i])
+            trainSet,trainLabels = filterTrainSet(x[i],i)
             trainSet.append(x[i])
             trainLabels.append(y[i])
         else:
