@@ -46,8 +46,8 @@ if __name__ == '__main__':
 
 # Set pointer to correct destination to access the data file. 
 basepath = os.path.dirname(__file__)
-trainpath = os.path.abspath(os.path.join(basepath, "Data2/train.csv"))
-testpath = os.path.abspath(os.path.join(basepath, "Data2/test.csv"))
+trainpath = os.path.abspath(os.path.join(basepath, "../Data2/train.csv"))
+testpath = os.path.abspath(os.path.join(basepath, "../Data2/test.csv"))
 
 # Parse trainX data into two variables trainX and trainY. x = feature data, y = outcome
 tempTrainX = np.genfromtxt(trainpath, delimiter=',', usecols=range(0, 41))

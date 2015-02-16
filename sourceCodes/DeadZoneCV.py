@@ -29,9 +29,9 @@ if __name__ == '__main__':
     pass
 
 basepath = os.path.dirname(__file__)
-inputpath = os.path.abspath(os.path.join(basepath, "Data4/INPUT.csv"))
-outputpath = os.path.abspath(os.path.join(basepath, "Data4/OUTPUT.csv"))
-coordinatespath = os.path.abspath(os.path.join(basepath, "Data4/COORDINATES.csv"))
+inputpath = os.path.abspath(os.path.join(basepath, "../Data4/INPUT.csv"))
+outputpath = os.path.abspath(os.path.join(basepath, "../Data4/OUTPUT.csv"))
+coordinatespath = os.path.abspath(os.path.join(basepath, "../Data4/COORDINATES.csv"))
 
 x = np.genfromtxt(inputpath, delimiter=',')
 y = np.genfromtxt(outputpath, delimiter=',')

@@ -37,7 +37,7 @@ if __name__ == '__main__':
 
 # Set pointer to correct destination to access the data file. 
 basepath = os.path.dirname(__file__)
-filepath = os.path.abspath(os.path.join(basepath, "Data1/fertility_diag.txt"))
+filepath = os.path.abspath(os.path.join(basepath, "../Data1/fertility_diag.txt"))
 
 # Parse data into two variables x and y. x = feature data, y = outcome
 x = np.loadtxt(filepath, delimiter=',', usecols=range(0,9))
