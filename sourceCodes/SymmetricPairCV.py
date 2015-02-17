@@ -36,7 +36,6 @@ def generateIndexDep():
 
 dependencies = generateIndexDep()
 
-
 def filterTrainSet(index):
     lowerBound = (index/10)*10
     
@@ -44,8 +43,7 @@ def filterTrainSet(index):
         lowerBound = lowerBound - 10
         
     indexOfSecondPair = lowerBound / 20
-    indexOfFirstPair = index - lowerBound
-    
+    indexOfFirstPair = index - lowerBound 
 
     testIndexes = dependencies[indexOfFirstPair] + dependencies[indexOfSecondPair]
     #CREATE TRAINING SET AND LABELS
@@ -57,7 +55,6 @@ def filterTrainSet(index):
             trainLabels.append(y[i])
             
     return trainSet,trainLabels
-    
 
 def LooCV(modified):
     yPredictions = []
